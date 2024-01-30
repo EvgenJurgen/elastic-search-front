@@ -1,1 +1,9 @@
-{}
+{
+  "placeholder": {
+    "enter_input_data_for_generation": "Entering input data for generation"
+  },
+  "button": { "generate": "Generate" },
+  "text": {
+    "get_scientific_information_on_input_data": "Get scientific information on input data"
+  }
+}
