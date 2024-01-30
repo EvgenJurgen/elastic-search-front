@@ -6,6 +6,8 @@ import { paths } from "./constant";
 import Layout from "components/templates";
 
 import GeneratePlan from "pages/GeneratePlan";
+import Sections from "pages/Sections";
+import Topics from "pages/Topics";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Layout>
           <Routes>
             <Route path={paths.generatePlan} element={<GeneratePlan />} />
+            <Route path={paths.sections} element={<Sections />} />
+            <Route path={paths.topics} element={<Topics />} />
             <Route
               path="*"
               element={<Navigate to={paths.generatePlan} replace />}
