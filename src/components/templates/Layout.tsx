@@ -5,23 +5,19 @@ import {
   Box,
   Paper,
 } from "@mui/material";
-import { useTranslation } from "react-i18next";
+
+import { paths } from "app/constant";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import TopicRoundedIcon from "@mui/icons-material/TopicRounded";
 import LibraryBooksRoundedIcon from "@mui/icons-material/LibraryBooksRounded";
 
-import { paths } from "app/constant";
-import { useLocation, useNavigate } from "react-router-dom";
-
 interface Props {
   children: ReactNode;
 }
 
-const bottomNavigationHeight = "56px";
-
 const Layout: FC<Props> = ({ children }: any) => {
-  const { t } = useTranslation();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -31,19 +27,14 @@ const Layout: FC<Props> = ({ children }: any) => {
         sx={{
           position: "relative",
           width: "100%",
-          height: `calc(100vh - ${bottomNavigationHeight})`,
+          height: `calc(100vh - 56px)`,
           overflow: "auto",
           backgroundColor: "#F4F6FB",
         }}
       >
         {children}
       </Box>
-      <Paper
-        className={
-          "fixed bottom-0 inset-x-0 " + `h-[${bottomNavigationHeight}]`
-        }
-        elevation={2}
-      >
+      <Paper className={"fixed bottom-0 inset-x-0 h-[56px]"} elevation={3}>
         <BottomNavigation
           showLabels
           value={pathname}

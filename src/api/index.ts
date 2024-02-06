@@ -3,7 +3,7 @@ import { BASE_URL } from "../constant";
 
 export const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
-  credentials: "include",
+  credentials: "same-origin",
   prepareHeaders: (headers) => {
     return headers;
   },
