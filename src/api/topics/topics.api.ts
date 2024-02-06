@@ -17,13 +17,13 @@ export const topicsApi = createApi({
     getTopicsBySection: build.query<Topic[], string>({
       query: (sectionId) => ({ url: `/api/topic/by-section/${sectionId}` }),
     }),
-    addTopic: build.mutation<string, Omit<Topic, "id">>({
+    createTopic: build.mutation<string, Omit<Topic, "id">>({
       query: (body) => ({ url: "/api/topic", method: "POST", body }),
     }),
     updateTopic: build.mutation<string, Topic>({
       query: (body) => ({ url: "/api/topic", method: "PUT", body }),
     }),
-    deleteTOpic: build.mutation<string, Pick<Topic, "id">>({
+    deleteTopic: build.mutation<string, Pick<Topic, "id">>({
       query: (body) => ({ url: "/api/topic", method: "DELETE", body }),
     }),
   }),
@@ -33,9 +33,9 @@ export const {
   useGetTopicsQuery,
   useGetTopicQuery,
   useGetTopicsBySectionQuery,
-  useAddTopicMutation,
+  useCreateTopicMutation,
   useUpdateTopicMutation,
-  useDeleteTOpicMutation,
+  useDeleteTopicMutation,
 } = topicsApi;
 
 export default topicsApi;

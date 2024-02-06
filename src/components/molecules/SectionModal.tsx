@@ -66,17 +66,11 @@ const SectionModal: FC<Props> = ({
   }, [section, topicsBySection]);
 
   const [topicId, setTopicId] = useState("");
-  const [openTopicModal, setOpenTopicModal] = useState<{
-    mode: "view" | "create";
-    open: boolean;
-  }>({
-    mode: "view",
-    open: false,
-  });
+  const [openTopicModal, setOpenTopicModal] = useState<boolean>(false);
 
   const [editMode, setEditMode] = useState(false);
 
-  const [titleFieldError, setTitleFieldError] = useState(false);
+  const [formFieldError, setFormFieldError] = useState({ title: false });
 
   useEffect(() => {
     setData(savedData);
@@ -92,9 +86,9 @@ const SectionModal: FC<Props> = ({
     }
   };
 
-  const handleChangeSectionTitle = (newValue: string) => {
-    setTitleFieldError(false);
-    setData((prev) => ({ ...prev, title: newValue }));
+  const handleChangeFormField = (key: string, newValue: string) => {
+    setFormFieldError((prev) => ({ ...prev, [key]: false }));
+    setData((prev) => ({ ...prev, [key]: newValue }));
   };
 
   const handleDeleteTopic = (topicId: string) => {
@@ -107,7 +101,7 @@ const SectionModal: FC<Props> = ({
   const handleSaveChanges = async () => {
     try {
       if (!data.title) {
-        setTitleFieldError(true);
+        setFormFieldError((prev) => ({ ...prev, title: !data.title }));
         return;
       }
 
@@ -138,7 +132,7 @@ const SectionModal: FC<Props> = ({
         title={
           editMode
             ? t("title:section_modal_edit_mode")
-            : t("title:section_modal_create_mode")
+            : t("title:section_modal_view_mode")
         }
         onEdit={() => setEditMode((prev) => !prev)}
         onDelete={handleDeleteSection}
@@ -158,7 +152,7 @@ const SectionModal: FC<Props> = ({
                       className="flex flex-row gap-1 rounded p-1 [&:hover]:bg-[#F4F6FB] cursor-pointer"
                       onClick={() => {
                         setTopicId(topic.id);
-                        setOpenTopicModal({ mode: "view", open: true });
+                        setOpenTopicModal(true);
                       }}
                       key={topic.id}
                     >
@@ -185,8 +179,10 @@ const SectionModal: FC<Props> = ({
                   maxRows={3}
                   placeholder={t("placeholder:enter_the_title_field")}
                   value={data.title}
-                  onChange={(e) => handleChangeSectionTitle(e.target.value)}
-                  error={titleFieldError}
+                  onChange={(e) =>
+                    handleChangeFormField("title", e.target.value)
+                  }
+                  error={formFieldError.title}
                 />
 
                 {data.topics.length ? (
@@ -212,15 +208,15 @@ const SectionModal: FC<Props> = ({
           </Box>
         )}
       </ModalContainer>
-      {openTopicModal.open && (
+      {openTopicModal && (
         <TopicModal
-          open={openTopicModal.open}
-          mode={openTopicModal.mode}
+          open={openTopicModal}
           topicId={topicId}
           onClose={() => {
-            setOpenTopicModal({ mode: "view", open: false });
+            setOpenTopicModal(false);
             setTopicId("");
           }}
+          refetchTopics={refetchTopicsBySection}
         />
       )}
     </>

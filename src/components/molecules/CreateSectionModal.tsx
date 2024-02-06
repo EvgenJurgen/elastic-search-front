@@ -35,15 +35,20 @@ const CreateSectionModal: FC<Props> = ({ open, onClose, refetchSections }) => {
     { skip: !data.searchTopic }
   );
 
-  const [titleFieldError, setTitleFieldError] = useState(false);
+  const [formFieldError, setFormFieldError] = useState({ title: false });
 
-  const handleChangeSectionTitle = (newValue: string) => {
-    setTitleFieldError(false);
-    setData((prev) => ({ ...prev, title: newValue }));
+  const handleChangeFormField = (key: string, newValue: string) => {
+    setFormFieldError((prev) => ({ ...prev, [key]: false }));
+    setData((prev) => ({ ...prev, [key]: newValue }));
   };
 
   const handleCreate = async () => {
     try {
+      if (!data.title) {
+        setFormFieldError((prev) => ({ ...prev, title: !data.title }));
+        return;
+      }
+
       await createSection({
         ...data,
         topics: data.topics.map((topic) => topic.id),
@@ -69,8 +74,8 @@ const CreateSectionModal: FC<Props> = ({ open, onClose, refetchSections }) => {
         maxRows={3}
         placeholder={t("placeholder:enter_the_title_field")}
         value={data.title}
-        onChange={(e) => handleChangeSectionTitle(e.target.value)}
-        error={titleFieldError}
+        onChange={(e) => handleChangeFormField("title", e.target.value)}
+        error={formFieldError.title}
       />
 
       <AutocompliteWithSearch
