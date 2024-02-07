@@ -79,7 +79,7 @@ const CreateSectionModal: FC<Props> = ({ open, onClose, refetchSections }) => {
       />
 
       <AutocompliteWithSearch
-        options={topicsByPattern}
+        options={topicsByPattern?.items}
         loading={isLoading}
         selectedOptions={data.topics}
         placeholder={t("placeholder:select_topics")}

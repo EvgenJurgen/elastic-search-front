@@ -1,12 +1,12 @@
 import { createApi } from "@reduxjs/toolkit/dist/query/react";
 import { baseQuery } from "api";
-import { GetTopicsQueries, Topic } from "./types";
+import { GetTopicsQueries, Topic, TopicsWithPagination } from "./types";
 
 export const topicsApi = createApi({
   reducerPath: "topics/api",
   baseQuery,
   endpoints: (build) => ({
-    getTopics: build.query<Topic[], GetTopicsQueries | void>({
+    getTopics: build.query<TopicsWithPagination, GetTopicsQueries | void>({
       query: (topicsQueries) => ({
         url: `/api/topic?${new URLSearchParams(topicsQueries ? (topicsQueries as Record<string, string>) : undefined).toString()}`,
       }),
@@ -32,6 +32,7 @@ export const topicsApi = createApi({
 export const {
   useGetTopicsQuery,
   useGetTopicQuery,
+  useLazyGetTopicQuery,
   useGetTopicsBySectionQuery,
   useCreateTopicMutation,
   useUpdateTopicMutation,

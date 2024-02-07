@@ -1,33 +1,27 @@
 import React, { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Box,
-  IconButton,
-  List,
-  ListItem,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, List, ListItem, TextField, Typography } from "@mui/material";
 
 import {
   useDeleteSectionMutation,
   useGetSectionQuery,
   useUpdateSectionMutation,
 } from "api/sections";
-import { useGetTopicsBySectionQuery } from "api/topics";
+import { useGetTopicsBySectionQuery, useGetTopicsQuery } from "api/topics";
 
 import { SectionModalData } from "types";
 
 import TopicModal from "./TopicModal";
 
+import AutocompliteWithSearch from "./AutocompliteWithSearch";
+
 import ModalContainer from "components/templates/ModalContainer";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 
 interface Props {
   open: boolean;
   onClose: any;
   sectionId: string;
-  refetchSections: any;
+  refetchSections: (mode: "update" | "delete") => void;
 }
 
 const MAX_COUNT_OF_DESCRIPTION_CHARACTERS = 100;
@@ -46,8 +40,20 @@ const SectionModal: FC<Props> = ({
   const [savedData, setSavedData] = useState<SectionModalData>({
     title: "",
     topics: [],
+    searchTopic: "",
   });
-  const [data, setData] = useState<SectionModalData>({ title: "", topics: [] });
+  const [data, setData] = useState<SectionModalData>({
+    title: "",
+    topics: [],
+    searchTopic: "",
+  });
+
+  const { data: topicsByPattern, isLoading } = useGetTopicsQuery(
+    {
+      pattern: data.searchTopic,
+    },
+    { skip: !data.searchTopic }
+  );
 
   const { data: section, refetch: refetchSection } =
     useGetSectionQuery(sectionId);
@@ -61,7 +67,7 @@ const SectionModal: FC<Props> = ({
 
   useEffect(() => {
     if (section && topicsBySection) {
-      setSavedData({ ...section, topics: topicsBySection });
+      setSavedData({ ...section, topics: topicsBySection, searchTopic: "" });
     }
   }, [section, topicsBySection]);
 
@@ -79,7 +85,7 @@ const SectionModal: FC<Props> = ({
   const handleDeleteSection = async () => {
     try {
       await deleteSection({ id: sectionId });
-      refetchSections();
+      refetchSections("delete");
       onClose();
     } catch (e) {
       console.log(e);
@@ -89,13 +95,6 @@ const SectionModal: FC<Props> = ({
   const handleChangeFormField = (key: string, newValue: string) => {
     setFormFieldError((prev) => ({ ...prev, [key]: false }));
     setData((prev) => ({ ...prev, [key]: newValue }));
-  };
-
-  const handleDeleteTopic = (topicId: string) => {
-    setData((prev) => ({
-      ...prev,
-      topics: prev.topics.filter((topic) => topic.id !== topicId),
-    }));
   };
 
   const handleSaveChanges = async () => {
@@ -113,7 +112,7 @@ const SectionModal: FC<Props> = ({
       setEditMode(false);
       refetchSection();
       refetchTopicsBySection();
-      refetchSections();
+      refetchSections("update");
     } catch (e) {
       console.log(e);
     }
@@ -185,24 +184,23 @@ const SectionModal: FC<Props> = ({
                   error={formFieldError.title}
                 />
 
-                {data.topics.length ? (
-                  <List disablePadding className="flex flex-col">
-                    {data.topics.map((topic) => (
-                      <ListItem
-                        disablePadding
-                        key={topic.id}
-                        className="flex flex-row justify-between"
-                      >
-                        <Typography className="w-full font-medium text-sm">
-                          {topic.title}
-                        </Typography>
-                        <IconButton onClick={() => handleDeleteTopic(topic.id)}>
-                          <DeleteOutlineRoundedIcon />
-                        </IconButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                ) : null}
+                <AutocompliteWithSearch
+                  options={topicsByPattern?.items}
+                  loading={isLoading}
+                  selectedOptions={data.topics}
+                  placeholder={t("placeholder:select_topics")}
+                  inputValue={data.searchTopic}
+                  onChangeInputValue={(value) =>
+                    setData((prev) => ({ ...prev, searchTopic: value }))
+                  }
+                  saveOptions={(topics) => {
+                    setData((prev) => ({ ...prev, topics }));
+                  }}
+                  getValue={(option) => option.title}
+                  getRenderOption={(option) => (
+                    <Typography>{option.title}</Typography>
+                  )}
+                />
               </>
             )}
           </Box>

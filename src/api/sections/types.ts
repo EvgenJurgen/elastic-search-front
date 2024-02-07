@@ -3,3 +3,13 @@ export interface Section {
   title: string;
   topics: string[];
 }
+
+export interface SectionsWithPagination {
+  items: Section[];
+  last: boolean;
+}
+
+export interface GetSectionsQueries {
+  page?: number;
+  size?: number;
+}

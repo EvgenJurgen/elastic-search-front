@@ -51,7 +51,8 @@ const AutocompliteWithSearch: FC<Props> = ({
     }
   }, [debouncedSearch]);
 
-  const [selectedLocalOptions, setSelectedLocalOptions] = useState<any[]>([]);
+  const [selectedLocalOptions, setSelectedLocalOptions] =
+    useState<any[]>(selectedOptions);
 
   useEffect(() => {
     if (

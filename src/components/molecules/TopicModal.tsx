@@ -14,7 +14,7 @@ interface Props {
   open: boolean;
   onClose: any;
   topicId: string;
-  refetchTopics: any;
+  refetchTopics: (mode: "update" | "delete") => void;
 }
 
 const TopicModal: FC<Props> = ({ open, topicId, onClose, refetchTopics }) => {
@@ -57,7 +57,7 @@ const TopicModal: FC<Props> = ({ open, topicId, onClose, refetchTopics }) => {
   const handleDeleteTopic = async () => {
     try {
       await deleteTopic({ id: topicId });
-      refetchTopics();
+      refetchTopics("delete");
       onClose();
     } catch (e) {
       console.log(e);
@@ -83,7 +83,7 @@ const TopicModal: FC<Props> = ({ open, topicId, onClose, refetchTopics }) => {
       await updateTopic({ ...data, id: topicId });
       setEditMode(false);
       refetchTopic();
-      refetchTopics();
+      refetchTopics("update");
     } catch (e) {
       console.log(e);
     }
