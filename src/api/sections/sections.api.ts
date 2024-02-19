@@ -1,6 +1,11 @@
 import { createApi } from "@reduxjs/toolkit/dist/query/react";
 import { baseQuery } from "api";
-import { GetSectionsQueries, Section, SectionsWithPagination } from "./types";
+import {
+  GetSectionsQueries,
+  Section,
+  SectionsByDataBody,
+  SectionsWithPagination,
+} from "./types";
 
 export const sectionsApi = createApi({
   reducerPath: "sections/api",
@@ -16,8 +21,8 @@ export const sectionsApi = createApi({
     getSection: build.query<Section | null, string>({
       query: (id) => ({ url: `/api/section/${id}` }),
     }),
-    getSectionsByData: build.query<Section[], string>({
-      query: (body) => ({ url: "/api/section/by-data", method: "POST", body }), // change
+    getSectionsByData: build.query<Section[], SectionsByDataBody>({
+      query: (body) => ({ url: "/api/section/by-data", method: "POST", body }),
     }),
     createSection: build.mutation<string, Omit<Section, "id">>({
       query: (body) => ({ url: "/api/section", method: "POST", body }),

@@ -42,7 +42,7 @@ const GeneratePlan = () => {
     try {
       setDataForGenerationError(!dataForGeneration);
       if (dataForGeneration) {
-        triggerGetSections(dataForGeneration);
+        triggerGetSections({ description: dataForGeneration });
       }
     } catch (err) {
       console.error(err);

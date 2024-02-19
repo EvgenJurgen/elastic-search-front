@@ -13,3 +13,7 @@ export interface GetSectionsQueries {
   page?: number;
   size?: number;
 }
+
+export interface SectionsByDataBody {
+  description: string;
+}
